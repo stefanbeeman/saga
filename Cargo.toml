@@ -1,0 +1,36 @@
+[package]
+name = "saga"
+version = "0.0.1"
+authors = ["Stefan Beeman <stefan@eldritchmedia.com>"]
+
+[[bin]]
+name = "saga"
+path = "src/main.rs"
+
+[dependencies]
+nalgebra = "*"
+rand = "*"
+
+[dependencies.ndarray]
+git = "https://github.com/bluss/rust-ndarray"
+
+[dependencies.pistoncore-sdl2_window]
+git = "https://github.com/pistondevelopers/sdl2_window"
+
+[dependencies.piston]
+git = "https://github.com/pistondevelopers/piston"
+
+[dependencies.piston2d-sprite]
+git = "https://github.com/pistondevelopers/sprite"
+
+[dependencies.piston2d-graphics]
+git = "https://github.com/pistondevelopers/graphics"
+
+[dependencies.piston2d-opengl_graphics]
+git = "https://github.com/pistondevelopers/opengl_graphics"
+
+[dependencies.piston-ai_behavior]
+git = "https://github.com/pistondevelopers/ai_behavior"
+
+[dependencies.uuid]
+git = "https://github.com/rust-lang/uuid"
