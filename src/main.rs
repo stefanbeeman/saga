@@ -1,3 +1,5 @@
+#![feature(fs_walk)]
+
 extern crate ai_behavior;
 extern crate graphics;
 extern crate rand;
@@ -44,9 +46,10 @@ fn start_game(width: u32, height: u32, fullscreen: bool) {
     );
     let window = RefCell::new(window);
     let mut gl = GlGraphics::new(opengl);
+    let renderer = render::Renderer::new();
 
     let game_world = world::layer::Layer::new();
-    let mut scene = render::layer::render_layer(game_world);
+    let mut scene = renderer.render_layer(game_world);
 
     for e in piston::events(&window) {
         use piston::event::*;

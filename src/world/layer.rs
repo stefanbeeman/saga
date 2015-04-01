@@ -10,7 +10,7 @@ pub struct Layer {
 impl Layer {
     pub fn new() -> Self {
         Layer {
-            tiles: Array::from_elem((10, 10), Tile {
+            tiles: Array::from_elem((100, 100), Tile {
                 floor: Floor::Grass(0),
             }),
         }
