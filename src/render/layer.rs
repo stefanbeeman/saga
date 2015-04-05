@@ -13,7 +13,7 @@ use world::layer::Layer;
 use world::tile::Tile;
 
 impl Renderer {
-    pub fn render_layer(&self, layer: Layer) -> Scene<Texture> {
+    pub fn render_layer(&self, layer: &Layer) -> Scene<Texture> {
         let mut scene = Scene::new();
         layer.each_with_pos(|pos: Pnt2<u32>, tile: &Tile| {
             let mut sprite = self.render_tile(tile);

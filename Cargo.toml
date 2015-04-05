@@ -11,6 +11,9 @@ path = "src/main.rs"
 nalgebra = "*"
 rand = "*"
 
+[dependencies.conrod]
+git = "https://github.com/PistonDevelopers/conrod"
+
 [dependencies.ndarray]
 git = "https://github.com/bluss/rust-ndarray"
 
