@@ -8,12 +8,16 @@ use std::fs;
 use std::path::Path;
 use std::rc::Rc;
 
+use world::layer::Layer;
+
 pub struct Renderer {
     textures: HashMap<String, Rc<Texture>>,
+    pub sprites: Vec<Uuid>,
+    pub scene: Scene<Texture>,
 }
 
 impl Renderer {
-    pub fn new() -> Self {
+    pub fn new(world: &Layer) -> Self {
         let mut cache = HashMap::new();
         match fs::walk_dir(&Path::new("gfx")) {
             Err(why) => panic!("Could not load textures"),
@@ -21,7 +25,7 @@ impl Renderer {
                 let path = wrapped_path.unwrap().path();
                 let maybe_filename = path.to_str();
                 match maybe_filename {
-                    None => panic!("Attempted to load texture without filename(?)"),
+                    None => panic!("Attempted to load texture without filename (?)"),
                     Some(filename) => if filename.contains(".png") {
                         let tex = Rc::new(Texture::from_path(&path).unwrap());
                         cache.insert(filename.to_string(), tex);
@@ -29,9 +33,13 @@ impl Renderer {
                 }
             }
         }
-        Renderer {
+        let mut renderer = Renderer {
             textures: cache,
-        }
+            sprites: Vec::<Uuid>::new(),
+            scene: Scene::new(),
+        };
+        renderer.render_layer(world);
+        renderer
     }
     pub fn get_texture(&self, path: &str) -> Rc<Texture> {
         match self.textures.get(path) {
@@ -42,7 +50,16 @@ impl Renderer {
     pub fn get_sprite(&self, path: &str) -> Sprite<Texture> {
         let tile_path = "gfx/".to_string() + path + ".png";
         let tex = self.get_texture(&tile_path);
-        Sprite::from_texture(tex)
+        let sprite = Sprite::from_texture(tex);
+        sprite
+    }
+    pub fn move_anchor(&mut self, delta: Vec2<i32>) {
+        let mut sprites = &self.sprites;
+        for id in sprites {
+            let mut sprite = self.scene.child_mut(&id).unwrap();
+            let (x, y) = sprite.position();
+            sprite.set_position(x + (delta.x as f64), y + (delta.y as f64));
+        }
     }
 }
 

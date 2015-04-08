@@ -11,8 +11,9 @@ extern crate sprite;
 extern crate uuid;
 
 mod app;
-mod world;
+mod game;
 mod render;
+mod world;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -34,7 +35,7 @@ use opengl_graphics::{
 };
 use piston::window::{ WindowSettings, Size };
 
-fn main() {
+fn game_loop() {
     let opengl = OpenGL::_3_2;
     let (width, height) = (1440, 1280);
     let window = Sdl2Window::new(
@@ -52,4 +53,10 @@ fn main() {
         use piston::event::*;
         game.event(e);
     }
+}
+
+fn main() {
+    let roll = game::dice::DieRoll::new(5u32, 12u32);
+    println!("{}", roll.hits(7u32));
+    //game_loop();
 }

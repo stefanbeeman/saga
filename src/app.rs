@@ -1,4 +1,5 @@
 use graphics;
+use na::{ Pnt2, Vec2 };
 use opengl_graphics::{
     GlGraphics,
     OpenGL,
@@ -14,27 +15,29 @@ use render::Renderer;
 use world::layer::Layer;
 
 pub struct App {
+    pub cursor: Sprite<Texture>,
     pub gl: GlGraphics,
     pub renderer: Renderer,
-    pub scene: Scene<Texture>,
     pub world: Layer,
 }
 
 impl App {
     pub fn new(gl: GlGraphics) -> Self {
         let world = Layer::new();
-        let renderer = Renderer::new();
-        let scene = renderer.render_layer(&world);
+        let renderer = Renderer::new(&world);
+        let mut cursor = renderer.get_sprite("ui/cursor/cursor");
+        cursor.set_anchor(0 as f64, 0 as f64);
+        cursor.set_position(0 as f64, 0 as f64);
         App{
+            cursor: cursor,
             gl: gl,
             renderer: renderer,
-            scene: scene,
             world: world,
         }
     }
     pub fn event(&mut self, e: Event) {
         use piston::event::*;
-        self.scene.event(&e);
+        self.renderer.scene.event(&e);
         if let Some(args) = e.render_args() {
             self.draw(args);
         }
@@ -47,28 +50,43 @@ impl App {
     }
     pub fn draw(&mut self, args: RenderArgs) {
         use graphics::*;
-        let mut scene = &mut self.scene;
+        let mut scene = &mut self.renderer.scene;
+        let mut cursor = &mut self.cursor;
         self.gl.draw([0, 0, args.width as i32, args.height as i32], |c, gl| {
             graphics::clear([1.0, 1.0, 1.0, 1.0], gl);
             scene.draw(c.transform, gl);
+            cursor.draw(c.transform, gl);
         });
     }
-    pub fn cursor(&self, pos: [f64; 2]) {
-        let (x, y) = (pos[0] as u32, pos[1] as u32);
-        println!("{}, {}", x/32, y/32);
+    pub fn cursor(&mut self, pos: [f64; 2]) {
+        let x = (pos[0]/32.0).floor() * 32.0;
+        let y = (pos[1]/32.0).floor() * 32.0;
+        self.cursor.set_position(x as f64, y as f64);
     }
-    pub fn press(&self, button: Button) {
+    pub fn press(&mut self, button: Button) {
         match button {
             Button::Keyboard(key) => self.keyboard(key),
             Button::Mouse(button) => self.mouse(),
         }
     }
-    pub fn keyboard(&self, key: keyboard::Key) {
+    pub fn keyboard(&mut self, key: keyboard::Key) {
         match key {
-            keyboard::Key::Left => println!("Go Left!"),
-            keyboard::Key::Right => println!("Go Right!"),
-            keyboard::Key::Up => println!("Go Up!"),
-            keyboard::Key::Down => println!("Go Down!"),
+            keyboard::Key::Left => self.renderer.move_anchor(Vec2::<i32> {
+                x: 32,
+                y: 0,
+            }),
+            keyboard::Key::Right => self.renderer.move_anchor(Vec2::<i32> {
+                x: -32,
+                y: 0,
+            }),
+            keyboard::Key::Up => self.renderer.move_anchor(Vec2::<i32> {
+                x: 0,
+                y: 32,
+            }),
+            keyboard::Key::Down => self.renderer.move_anchor(Vec2::<i32> {
+                x: 0,
+                y: -32,
+            }),
             _ => println!("Other key!"),
         }
     }
