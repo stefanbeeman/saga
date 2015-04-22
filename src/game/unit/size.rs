@@ -1,4 +1,7 @@
-pub enum UnitSize {
+use game::unit::Unit;
+
+#[derive(Debug, Clone, Copy)]
+pub enum Size {
     Fine, // size of an insect
     Diminutive, // size of a rodent
     Tiny, // size of a cat

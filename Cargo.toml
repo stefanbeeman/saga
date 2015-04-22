@@ -9,6 +9,7 @@ path = "src/main.rs"
 
 [dependencies]
 nalgebra = "*"
+probability = "*"
 rand = "*"
 
 [dependencies.conrod]

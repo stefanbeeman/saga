@@ -6,6 +6,7 @@ extern crate nalgebra as na;
 extern crate ndarray as nd;
 extern crate opengl_graphics;
 extern crate piston;
+extern crate probability;
 extern crate sdl2_window;
 extern crate sprite;
 extern crate uuid;
@@ -33,6 +34,7 @@ use opengl_graphics::{
     OpenGL,
     Texture,
 };
+use piston::event::*;
 use piston::window::{ WindowSettings, Size };
 
 fn game_loop() {
@@ -49,14 +51,48 @@ fn game_loop() {
     let window = Rc::new(RefCell::new(window));
     let mut gl = GlGraphics::new(opengl);
     let mut game = app::App::new(gl);
-    for e in piston::events(window) {
+    for e in window.events() {
         use piston::event::*;
         game.event(e);
     }
 }
 
 fn main() {
-    let roll = game::dice::DieRoll::new(5u32, 12u32);
-    println!("{}", roll.hits(7u32));
+    let mut xa = 0.0;
+    for _ in 0..1000 {
+        xa += game::test::test(6.0, 6.0);
+    }
+    xa = xa/1000.0;
+    println!("Equal {}", xa);
+
+    let mut xb = 0.0;
+    for _ in 0..1000 {
+        xb += game::test::test(3.0, 6.0);
+    }
+    xb = xb/1000.0;
+    println!("Lower {}", xb);
+
+    let mut xc = 0.0;
+    for _ in 0..1000 {
+        xc += game::test::test(6.0, 3.0);
+    }
+    xc = xc/1000.0;
+    println!("Higher {}", xc);
+    //
+    // let mut equal = 0.0;
+    // for n in 0..1000 {
+    //     equal += game::test::test(6.0, 6.0);
+    // }
+    // equal = equal/1000;
+    //
+    // let mut higher = 0.0;
+    // for n in 0..1000 {
+    //     higher += game::test::test(6.0, 3.0);
+    // }
+    // higher = higher/1000;
+    //
+    // println!("Lower {}", lower);
+    // println!("Equal {}", equal);
+    // println!("Higher {}", higher);
     //game_loop();
 }

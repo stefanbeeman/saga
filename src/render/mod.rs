@@ -56,7 +56,7 @@ impl Renderer {
     pub fn move_anchor(&mut self, delta: Vec2<i32>) {
         let mut sprites = &self.sprites;
         for id in sprites {
-            let mut sprite = self.scene.child_mut(&id).unwrap();
+            let mut sprite = self.scene.child_mut(id.clone()).unwrap();
             let (x, y) = sprite.position();
             sprite.set_position(x + (delta.x as f64), y + (delta.y as f64));
         }
